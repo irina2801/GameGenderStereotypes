@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ChoiceCanvas
   - Canvas
+  - ReflectionCanvas
   layers:
   - Default
   - TransparentFX

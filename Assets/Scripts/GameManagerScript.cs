@@ -20,13 +20,24 @@ public class GameManagerScript : MonoBehaviour
         // string inkJson = System.IO.File.ReadAllText("Assets/StreamingAssets/" + inkFileName + ".json");
         story = new Story(jsonAsset.text);
 
-        // Populate the dictionary with canvases tagged as "Canvas"
+        // Add canvases tagged as "Canvas"
         canvasDictionary = new Dictionary<string, GameObject>();
         foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("Canvas"))
         {
             canvasDictionary[canvas.name] = canvas;
             canvas.SetActive(false); // Deactivate all canvases initially
         }
+
+        // Add canvases tagged as "ReflectionCanvas"
+        foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("ReflectionCanvas"))
+        {
+            if (!canvasDictionary.ContainsKey(canvas.name)) // Avoid duplicates
+            {
+                canvasDictionary[canvas.name] = canvas;
+                canvas.SetActive(false); // Deactivate all canvases initially
+            }
+        }
+
 
         // Preload the first content to activate the initial canvas - This is a solution because I had to press 2 times on continue button at the beginning, GameManager could not detect the hashtag in ink file 
         if (story.canContinue)
@@ -43,6 +54,7 @@ public class GameManagerScript : MonoBehaviour
 
     private void ContinueStory()
     {
+
         // Get the current tags from the Ink story
         List<string> currentTags = story.currentTags;
 
@@ -72,8 +84,6 @@ public class GameManagerScript : MonoBehaviour
         }
 
 
-
-
         // Log current choices
         if (story.currentChoices.Count > 0)
         {
@@ -91,7 +101,7 @@ public class GameManagerScript : MonoBehaviour
 
     }
 
-    public void OnButtonPressed()//This is connected to the CONTINUE BUTTON
+    public void OnButtonPressed()//CONTINUE BUTTON This is connected to the CONTINUE BUTTON
     {
 
         if (story.canContinue)
@@ -134,6 +144,7 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
+
     private void ActivateCanvas(string canvasName)
     {
         // Deactivate all canvases
@@ -152,5 +163,6 @@ public class GameManagerScript : MonoBehaviour
             Debug.LogWarning("Canvas not found: " + canvasName);//If this debug appears, it means the names Unity-Ink might not be the same
         }
     }
+
 
 }

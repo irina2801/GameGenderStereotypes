@@ -2,11 +2,12 @@
 === PlayGameCanvas ===
 # canvas: PlayGameCanvas
 Play Game Button
--> Athena1Intro 
+-> choiceASchoolSubjects 
 
-=== Athena1Intro ===
-# canvas: Athena1Intro
-Hello! You traveled to ancient Athens on a special mission. <br><br>I am Athena (Venus), the goddess of wisdom and judge of the city.
+=== choiceASchoolSubjects ===
+# canvas: choiceASchoolSubjects
+Have you ever heard of a boy who likes art/literature or a girl who is good at sports/math?
+
 -> Athena2Intro
 
 === Athena2Intro ===
