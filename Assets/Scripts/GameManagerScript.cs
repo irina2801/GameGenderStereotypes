@@ -20,6 +20,7 @@ public class GameManagerScript : MonoBehaviour
     public GameObject reportCanvas; // Reference to the ReportCanvas
     public TMP_Text reportTextBox;  // Reference to the TextMeshPro text box in the ReportCanvas
 
+    public TMP_Text errorMessageText; // Global error message for continue button on ReflectionCanvas 
 
     void Start()
     {
@@ -122,19 +123,32 @@ public class GameManagerScript : MonoBehaviour
     //It works for normal canvases and also canvases with the tag "ReflectionCanvas" 
     public void OnButtonPressed()//CONTINUE Button
     {
+        // check if the current canvas is a ReflectionCanvas
+        if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
+        {
+            GameObject canvas = canvasDictionary[currentActiveCanvas];
+            if (canvas.CompareTag("ReflectionCanvas"))
+            {
+                // Validate inputs before proceeding
+                if (!AreAllInputsFilled(canvas))
+                {
+                    DisplayErrorMessage("Please answer all questions before proceeding:)");
+                    return;
+                }
+
+                // Clear error message upon successful validation
+                ClearErrorMessage();
+
+                //collect responses
+                CollectResponses();
+            }
+        }
+
+
+
 
         if (story.canContinue)
         {
-            // Collect responses only if the current canvas is a ReflectionCanvas
-            if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
-            {
-                GameObject canvas = canvasDictionary[currentActiveCanvas];
-                if (canvas.CompareTag("ReflectionCanvas"))
-                {
-                    CollectResponses();
-                }
-            }
-
             //Advance the story based on Ink file
             string storyText = story.Continue(); //this is for debug
             Debug.Log("Current text: " + storyText); //this is for debug
@@ -287,6 +301,64 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
+
+
+
+
+    private bool AreAllInputsFilled(GameObject canvas)
+    {
+        // Iterate through all child objects in the canvas
+        foreach (Transform child in canvas.transform)
+        {
+            // Check if the child is a TMP_InputField (Open-Ended Question)
+            TMP_InputField inputField = child.GetComponent<TMP_InputField>();
+            if (inputField != null)
+            {
+                if (string.IsNullOrWhiteSpace(inputField.text)) // Empty input field
+                {
+                    Debug.Log($"Input field '{inputField.name}' is empty.");
+                    return false;
+                }
+                continue; // Move to the next child
+            }
+
+            // Check if the child is a ToggleGroup (Closed Question)
+            ToggleGroup toggleGroup = child.GetComponent<ToggleGroup>();
+            if (toggleGroup != null)
+            {
+                if (!toggleGroup.AnyTogglesOn()) // No toggle selected
+                {
+                    Debug.Log($"Toggle group '{toggleGroup.name}' has no selection.");
+                    return false;
+                }
+            }
+        }
+
+        return true; // All inputs are valid
+    }
+
+    private void DisplayErrorMessage(string message)
+    {
+        if (errorMessageText != null)
+        {
+            errorMessageText.text = message;
+            errorMessageText.gameObject.SetActive(true); // Ensure it's visible
+            Debug.Log("Error displayed: " + message);
+        }
+        else
+        {
+            Debug.LogWarning("Error message text component is not assigned.");
+        }
+    }
+
+    private void ClearErrorMessage()
+    {
+        if (errorMessageText != null)
+        {
+            errorMessageText.text = ""; // Clear the text
+            errorMessageText.gameObject.SetActive(false); // Hide the message
+        }
+    }
 
 
 }

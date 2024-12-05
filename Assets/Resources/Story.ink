@@ -7,7 +7,11 @@ Play Game Button
 === choiceASchoolSubjects ===
 # canvas: choiceASchoolSubjects
 Have you ever heard of a boy who likes art/literature or a girl who is good at sports/math?
+-> Test
 
+=== Test ===
+# canvas: Test
+just for test
 -> Athena2Intro
 
 === Athena2Intro ===
