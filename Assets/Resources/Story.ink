@@ -42,5 +42,11 @@ Why aren't you ready to choose yet?
 
 === AskMoreInfo_Sophia ===
 # canvas: AskMoreInfo_Sophia
+text
+-> ReportCanvas
+
+=== ReportCanvas ===
+# canvas: ReportCanvas
+Final Report
 -> END
 

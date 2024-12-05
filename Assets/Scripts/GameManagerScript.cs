@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Ink.Runtime;
 using System.IO;
+using System.Linq; // Add this for LINQ methods - related to toggle
 
 public class GameManagerScript : MonoBehaviour
 {
@@ -14,13 +15,18 @@ public class GameManagerScript : MonoBehaviour
 
     public TextAsset jsonAsset;
 
+    //to save the player's answers in a list
+    private List<string> playerResponses = new List<string>();
+    public GameObject reportCanvas; // Reference to the ReportCanvas
+    public TMP_Text reportTextBox;  // Reference to the TextMeshPro text box in the ReportCanvas
+
+
     void Start()
     {
         // Load the Ink story from JSON file
-        // string inkJson = System.IO.File.ReadAllText("Assets/StreamingAssets/" + inkFileName + ".json");
         story = new Story(jsonAsset.text);
 
-        // Add canvases tagged as "Canvas"
+        // Add canvases tagged as "Canvas" in the Dictionary
         canvasDictionary = new Dictionary<string, GameObject>();
         foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("Canvas"))
         {
@@ -28,13 +34,23 @@ public class GameManagerScript : MonoBehaviour
             canvas.SetActive(false); // Deactivate all canvases initially
         }
 
-        // Add canvases tagged as "ReflectionCanvas"
+        // Add canvases tagged as "ReflectionCanvas" in the Dictionary
         foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("ReflectionCanvas"))
         {
             if (!canvasDictionary.ContainsKey(canvas.name)) // Avoid duplicates
             {
                 canvasDictionary[canvas.name] = canvas;
                 canvas.SetActive(false); // Deactivate all canvases initially
+            }
+        }
+
+        // Add canvases tagged as "ReportCanvas" in the Dictionary
+        foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("ReportCanvas"))
+        {
+            if (!canvasDictionary.ContainsKey(canvas.name)) // Avoid duplicates
+            {
+                canvasDictionary[canvas.name] = canvas;
+                // No need to disable here since ActivateCanvas handles it
             }
         }
 
@@ -93,30 +109,38 @@ public class GameManagerScript : MonoBehaviour
                 Debug.Log($"Choice {i}: {story.currentChoices[i].text}");
             }
         }
-        else
+        /*else
         {
-            Debug.LogWarning("No choices available!");
-        }
+            Debug.LogWarning("No choices available!"); //I no longer need this debug
+        }*/
 
 
     }
 
-    public void OnButtonPressed()//CONTINUE BUTTON This is connected to the CONTINUE BUTTON
+    //method driven by Ink file logic
+    //This methos is connected to the CONTINUE BUTTON in Inspector Unity
+    //It works for normal canvases and also canvases with the tag "ReflectionCanvas" 
+    public void OnButtonPressed()//CONTINUE Button
     {
 
         if (story.canContinue)
         {
-            //story.Continue(); // Advance the Ink story //This was before the debug
-            string storyText = story.Continue(); // Advance the Ink story
-            Debug.Log("Current text: " + storyText);
+            // Collect Answers Questions - from the current active canvas
+            CollectResponses();
+
+            //Advance the story based on Ink file
+            string storyText = story.Continue(); //this is for debug
+            Debug.Log("Current text: " + storyText); //this is for debug
             ContinueStory();
         }
         else
         {
-            Debug.LogWarning("No more content to continue in the story!");
+            // If the story has no more content, save the report
+            Debug.LogWarning("No more content to continue in the story!"); //this is for debug
+            SaveReport();
         }
     }
-
+    //method driven by Ink file logic
     public void OnChoiceSelected(int choiceIndex) // Connected to Choice Buttons from Unity
     {
         if (choiceIndex >= 0 && choiceIndex < story.currentChoices.Count)
@@ -144,7 +168,12 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
-
+    /* 
+        1. This method diactivates all canvases at the beginning of the game
+        2. Then it activated only 1 canvas at once based on the flow logic from th Ink file
+        3. Moreover, it tracks the currect active canvas name. This is useful for saving user's answers in the report file.
+    */
+    private string currentActiveCanvas = string.Empty;
     private void ActivateCanvas(string canvasName)
     {
         // Deactivate all canvases
@@ -157,12 +186,95 @@ public class GameManagerScript : MonoBehaviour
         if (canvasDictionary.ContainsKey(canvasName))
         {
             canvasDictionary[canvasName].SetActive(true);
+            currentActiveCanvas = canvasName; // get the current canvas name
+
+            // Check if the current canvas is the ReportCanvas
+            if (canvasDictionary[canvasName].CompareTag("ReportCanvas"))
+            {
+                DisplayReport(); // Display the saved answers
+            }
         }
         else
         {
             Debug.LogWarning("Canvas not found: " + canvasName);//If this debug appears, it means the names Unity-Ink might not be the same
+            currentActiveCanvas = string.Empty; // Reset if canvas not found
         }
     }
+
+    //This method collects the user's answers from the canvases with tag: ReflectionCanvas
+    //Then, collected answers are stored in playerResponses list with clear labeling for questions and answers
+    private void CollectResponses()
+    {
+        if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
+        {
+            GameObject canvas = canvasDictionary[currentActiveCanvas];
+
+            // Collect input field responses
+            TMP_InputField[] inputFields = canvas.GetComponentsInChildren<TMP_InputField>();
+            if (inputFields.Length == 0)
+            {
+                Debug.LogWarning($"No input fields found on canvas: {currentActiveCanvas}");
+            }
+
+            foreach (TMP_InputField inputField in inputFields)
+            {
+                if (!string.IsNullOrWhiteSpace(inputField.text))
+                {
+                    playerResponses.Add($"Question: {inputField.name}\nAnswer: {inputField.text}");
+                }
+            }
+
+            // Collect toggle responses
+            ToggleGroup[] toggleGroups = canvas.GetComponentsInChildren<ToggleGroup>();
+            if (toggleGroups.Length == 0)
+            {
+                Debug.LogWarning($"No toggle groups found on canvas: {currentActiveCanvas}");
+            }
+
+            foreach (ToggleGroup toggleGroup in toggleGroups)
+            {
+                Toggle selectedToggle = toggleGroup.ActiveToggles().FirstOrDefault();
+                if (selectedToggle != null)
+                {
+                    playerResponses.Add($"Question: {toggleGroup.name}\nAnswer: {selectedToggle.name}");
+                }
+            }
+        }
+    }
+
+    //This method saves the user's answers to a report file in Application.persistentDataPath when the game ends, while ensuring compatibility with Android when the game ends
+    private void SaveReport()
+    {
+        Debug.Log("Attempting to save the report...");
+        // Save the responses to a file
+        if (playerResponses.Count == 0)
+        {
+            Debug.LogWarning("No responses to save. Report will not be created.");
+            return;
+        }
+        string filePath = Application.persistentDataPath + "/PlayerReport.txt";
+        File.WriteAllLines(filePath, playerResponses);
+        Debug.Log($"Report saved at: {filePath}");
+
+
+    }
+
+    //This method displayes the text from the report file in the emty TextMeshPro box on the report canvas in Unity at the end of the game
+    private void DisplayReport()
+    {
+        if (reportCanvas != null && reportTextBox != null)
+        {
+            Debug.Log($"Displaying report: {string.Join("\n\n", playerResponses)}");
+            // Format and display the user responses in the text box
+            reportTextBox.text = string.Join("\n\n", playerResponses);
+            Debug.Log("Report displayed in the ReportCanvas.");
+        }
+        else
+        {
+            Debug.LogWarning("Report canvas or text box is not assigned.");
+        }
+    }
+
 
 
 }
