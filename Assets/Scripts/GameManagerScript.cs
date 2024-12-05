@@ -125,8 +125,15 @@ public class GameManagerScript : MonoBehaviour
 
         if (story.canContinue)
         {
-            // Collect Answers Questions - from the current active canvas
-            CollectResponses();
+            // Collect responses only if the current canvas is a ReflectionCanvas
+            if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
+            {
+                GameObject canvas = canvasDictionary[currentActiveCanvas];
+                if (canvas.CompareTag("ReflectionCanvas"))
+                {
+                    CollectResponses();
+                }
+            }
 
             //Advance the story based on Ink file
             string storyText = story.Continue(); //this is for debug
@@ -205,40 +212,45 @@ public class GameManagerScript : MonoBehaviour
     //Then, collected answers are stored in playerResponses list with clear labeling for questions and answers
     private void CollectResponses()
     {
+        // Ensure the current active canvas exists in the dictionary
         if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
         {
             GameObject canvas = canvasDictionary[currentActiveCanvas];
 
-            // Collect input field responses
-            TMP_InputField[] inputFields = canvas.GetComponentsInChildren<TMP_InputField>();
-            if (inputFields.Length == 0)
+            // Check if the current canvas is a ReflectionCanvas
+            if (canvas.CompareTag("ReflectionCanvas"))
             {
-                Debug.LogWarning($"No input fields found on canvas: {currentActiveCanvas}");
-            }
-
-            foreach (TMP_InputField inputField in inputFields)
-            {
-                if (!string.IsNullOrWhiteSpace(inputField.text))
+                // Iterate through all child objects in the hierarchy order
+                foreach (Transform child in canvas.transform)
                 {
-                    playerResponses.Add($"Question: {inputField.name}\nAnswer: {inputField.text}");
+                    // Check if the child is a TMP_InputField (Open-Ended Question)
+                    TMP_InputField inputField = child.GetComponent<TMP_InputField>();
+                    if (inputField != null && !string.IsNullOrWhiteSpace(inputField.text))
+                    {
+                        playerResponses.Add($"Question: {inputField.name}\nAnswer: {inputField.text}");
+                        continue; // Skip to the next child
+                    }
+
+                    // Check if the child is a ToggleGroup (Closed Question)
+                    ToggleGroup toggleGroup = child.GetComponent<ToggleGroup>();
+                    if (toggleGroup != null)
+                    {
+                        Toggle selectedToggle = toggleGroup.ActiveToggles().FirstOrDefault();
+                        if (selectedToggle != null)
+                        {
+                            playerResponses.Add($"Question: {toggleGroup.name}\nAnswer: {selectedToggle.name}");
+                        }
+                    }
                 }
             }
-
-            // Collect toggle responses
-            ToggleGroup[] toggleGroups = canvas.GetComponentsInChildren<ToggleGroup>();
-            if (toggleGroups.Length == 0)
+            else
             {
-                Debug.LogWarning($"No toggle groups found on canvas: {currentActiveCanvas}");
+                Debug.Log($"CollectResponses called on a non-ReflectionCanvas: {currentActiveCanvas}. No responses collected.");
             }
-
-            foreach (ToggleGroup toggleGroup in toggleGroups)
-            {
-                Toggle selectedToggle = toggleGroup.ActiveToggles().FirstOrDefault();
-                if (selectedToggle != null)
-                {
-                    playerResponses.Add($"Question: {toggleGroup.name}\nAnswer: {selectedToggle.name}");
-                }
-            }
+        }
+        else
+        {
+            Debug.LogWarning($"No active canvas or canvas not found in dictionary: {currentActiveCanvas}");
         }
     }
 
