@@ -2,55 +2,88 @@
 === PlayGameCanvas ===
 # canvas: PlayGameCanvas
 Play Game Button
--> choiceASchoolSubjects 
+-> 1Twins
 
-=== choiceASchoolSubjects ===
-# canvas: choiceASchoolSubjects
-Have you ever heard of a boy who likes art/literature or a girl who is good at sports/math?
--> Test
+=== 1Twins ===
+# canvas: 1Twins
+The twins Intro with Owl
+-> 2Twins
 
-=== Test ===
-# canvas: Test
-just for test
--> Athena2Intro
+=== 2Twins ===
+# canvas: 2Twins
+The twins
+* [OptionA] -> 3TwinschoosingA
+* [OptionB] -> 3TwinschoosingB
 
-=== Athena2Intro ===
-# canvas: Athena2Intro
-Today, I’m on vacation. <br>I’ve chosen you to be the judge in my place!
--> Athena3Intro 
+=== 3TwinschoosingA ===
+# canvas: 3TwinschoosingA
+The twins
+* [OptionA] -> 4TwinsAAndB
+* [OptionB] -> 4TwinsAAndB
 
-=== Athena3Intro ===
-# canvas: Athena3Intro
-Your job is to give advice to the people of Athens who come to you for help. <br><br>I am very curious what you will learn from this experience. Please enter my temple, the PARTHENON, on the ACROPOLIS hill. <br><br>Goodbye!
-->ReadyOrNot
+=== 3TwinschoosingB ===
+# canvas: 3TwinschoosingA
+The twins
+* [OptionA] -> 4TwinsAAndB
+* [OptionB] -> 4TwinsAAndB
 
-=== ReadyOrNot ===
-# canvas: ReadyOrNot
-* [YES] -> AMakingAChoice
-* [NO] -> BWhyNotReady
+=== 4TwinsAAndB ===
+# canvas: 4TwinsAAndB
+The twins
+-> PresentingBrother
 
-=== AMakingAChoice ===
-# canvas: AMakingAChoice
-AMakingAChoice
--> END
+=== PresentingBrother ===
+# canvas: PresentingBrother
+Presenting the 2 brothers
+-> ScenarioBrothers
 
-=== BWhyNotReady ===
-# canvas: BWhyNotReady
-Why aren't you ready to choose yet?
--> MoreInfo1
+=== ScenarioBrothers ===
+# canvas: ScenarioBrothers
+Scenario
+-> 1DialogueBigBrother
 
-=== MoreInfo1 ===
-# canvas: MoreInfo1
-* [A) GoBackAndChoose] -> END //NOT READY YET
-* [B) AskMoreInfo] -> AskMoreInfo_Sophia
+=== 1DialogueBigBrother ===
+# canvas: 1DialogueBigBrother
+Big Brother Talks: Greetings, jury...
+* [OptionAAskBigBrother] -> 2DialogueChoiceABigBrother
+* [OptionBAskTheLittleBrother] -> 2DialogueChoiceBLittleBrother
 
-=== AskMoreInfo_Sophia ===
-# canvas: AskMoreInfo_Sophia
-text
+
+=== 2DialogueChoiceABigBrother ===
+# canvas: 2DialogueChoiceABigBrother
+Big Brother Talks
+* [OptionA: Challenge] -> choiceAChallengedSubjects
+* [OptionB] -> choiceBNOTChallengedSubjects
+
+=== 2DialogueChoiceBLittleBrother ===
+# canvas: 2DialogueChoiceBLittleBrother
+Little Brother Talks
+* [OptionA: Challenge] -> choiceAChallengedSubjects
+* [OptionB] -> choiceBNOTChallengedSubjects
+
+=== choiceAChallengedSubjects ===
+# canvas: choiceAChallengedSubjects
+Congrats! You challenged Gender Stereotypes!
+-> ReportCanvas
+
+=== choiceBNOTChallengedSubjects ===
+# canvas: choiceBNOTChallengedSubjects
+Congrats! You challenged Gender Stereotypes!
 -> ReportCanvas
 
 === ReportCanvas ===
 # canvas: ReportCanvas
 Final Report
 -> END
+
+
+
+
+
+/*
+=== Athena3Intro ===
+# canvas: Athena3Intro
+Your job is to give advice to the people of Athens who come to you for help. <br><br>I am very curious what you will learn from this experience. Please enter my temple, the PARTHENON, on the ACROPOLIS hill. <br><br>Goodbye!(
+->ReadyOrNot
+*/
 

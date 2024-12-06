@@ -234,19 +234,24 @@ public class GameManagerScript : MonoBehaviour
             // Check if the current canvas is a ReflectionCanvas
             if (canvas.CompareTag("ReflectionCanvas"))
             {
-                // Iterate through all child objects in the hierarchy order
-                foreach (Transform child in canvas.transform)
+                // Use a queue to traverse all child objects, including nested ones
+                Queue<Transform> objectsToCheck = new Queue<Transform>();
+                objectsToCheck.Enqueue(canvas.transform);
+
+                while (objectsToCheck.Count > 0)
                 {
-                    // Check if the child is a TMP_InputField (Open-Ended Question)
-                    TMP_InputField inputField = child.GetComponent<TMP_InputField>();
+                    Transform current = objectsToCheck.Dequeue();
+
+                    // Check if the current object is a TMP_InputField (Open-Ended Question)
+                    TMP_InputField inputField = current.GetComponent<TMP_InputField>();
                     if (inputField != null && !string.IsNullOrWhiteSpace(inputField.text))
                     {
                         playerResponses.Add($"Question: {inputField.name}\nAnswer: {inputField.text}");
-                        continue; // Skip to the next child
+                        continue; // Move to the next object
                     }
 
-                    // Check if the child is a ToggleGroup (Closed Question)
-                    ToggleGroup toggleGroup = child.GetComponent<ToggleGroup>();
+                    // Check if the current object is a ToggleGroup (Closed Question)
+                    ToggleGroup toggleGroup = current.GetComponent<ToggleGroup>();
                     if (toggleGroup != null)
                     {
                         Toggle selectedToggle = toggleGroup.ActiveToggles().FirstOrDefault();
@@ -254,6 +259,12 @@ public class GameManagerScript : MonoBehaviour
                         {
                             playerResponses.Add($"Question: {toggleGroup.name}\nAnswer: {selectedToggle.name}");
                         }
+                    }
+
+                    // Add all children of the current object to the queue
+                    foreach (Transform child in current)
+                    {
+                        objectsToCheck.Enqueue(child);
                     }
                 }
             }
@@ -267,6 +278,7 @@ public class GameManagerScript : MonoBehaviour
             Debug.LogWarning($"No active canvas or canvas not found in dictionary: {currentActiveCanvas}");
         }
     }
+
 
     //This method saves the user's answers to a report file in Application.persistentDataPath when the game ends, while ensuring compatibility with Android when the game ends
     private void SaveReport()
@@ -307,11 +319,18 @@ public class GameManagerScript : MonoBehaviour
 
     private bool AreAllInputsFilled(GameObject canvas)
     {
-        // Iterate through all child objects in the canvas
-        foreach (Transform child in canvas.transform)
+        // Use a queue to traverse all child objects in the hierarchy 
+
+        //=> to make sure that it also takes in account the nested objects
+        Queue<Transform> objectsToCheck = new Queue<Transform>();
+        objectsToCheck.Enqueue(canvas.transform);
+
+        while (objectsToCheck.Count > 0)
         {
-            // Check if the child is a TMP_InputField (Open-Ended Question)
-            TMP_InputField inputField = child.GetComponent<TMP_InputField>();
+            Transform current = objectsToCheck.Dequeue();
+
+            // Check if the current object is a TMP_InputField (Open-Ended Question)
+            TMP_InputField inputField = current.GetComponent<TMP_InputField>();
             if (inputField != null)
             {
                 if (string.IsNullOrWhiteSpace(inputField.text)) // Empty input field
@@ -322,8 +341,8 @@ public class GameManagerScript : MonoBehaviour
                 continue; // Move to the next child
             }
 
-            // Check if the child is a ToggleGroup (Closed Question)
-            ToggleGroup toggleGroup = child.GetComponent<ToggleGroup>();
+            // Check if the current object is a ToggleGroup (Closed Question)
+            ToggleGroup toggleGroup = current.GetComponent<ToggleGroup>();
             if (toggleGroup != null)
             {
                 if (!toggleGroup.AnyTogglesOn()) // No toggle selected
@@ -332,10 +351,17 @@ public class GameManagerScript : MonoBehaviour
                     return false;
                 }
             }
+
+            // Add all children of the current object to the queue
+            foreach (Transform child in current)
+            {
+                objectsToCheck.Enqueue(child);
+            }
         }
 
         return true; // All inputs are valid
     }
+
 
     private void DisplayErrorMessage(string message)
     {
