@@ -18,7 +18,8 @@ public class InkDisplayText : MonoBehaviour
         {
             StopCoroutine(currentCoroutine);
         }
-        // Replace <br><br> with newline character
+
+        // Replace <br> with newline character
         text = text.Replace("<br>", "\n");
 
         // Start a new animation
@@ -35,8 +36,15 @@ public class InkDisplayText : MonoBehaviour
             StopCoroutine(currentCoroutine);
             currentCoroutine = null;
         }
-        // Display the full text immediately
-        displayText.text = displayText.text.Replace("<br>", "\n");//reverifica asta!
+    }
+
+    /// <summary>
+    /// Displays the full text without animation.=> This is needed for the go back button. 
+    /// </summary>
+    public void SetFullTextImmediately(string text)
+    {
+        StopAllAnimations(); // Stop any ongoing animation
+        displayText.text = text.Replace("<br>", "\n"); // Set the full text
     }
 
     /// <summary>
