@@ -17,19 +17,20 @@ Non potevate sapere chi scegliere per l'avventura perché non vi abbiamo detto i
 
 === 3TwinschoosingA ===
 # canvas: 3TwinschoosingA
-The twins
+Esattamente! Siamo più di un ragazzo o di una ragazza. Non tutti i ragazzi e le ragazze sono uguali. Forse il gufo voleva insegnarti qualcosa.
 * [OptionA] -> 4TwinsAAndB
 * [OptionB] -> 4TwinsAAndB
 
 === 3TwinschoosingB ===
 # canvas: 3TwinschoosingA
-The twins
+Sapevi solo che siamo un ragazzo e una ragazza. Come potevi conoscerci davvero? Tutti i ragazzi e le ragazze che conosci sono esattamente uguali?
+
 * [OptionA] -> 4TwinsAAndB
 * [OptionB] -> 4TwinsAAndB
 
 === 4TwinsAAndB ===
 # canvas: 4TwinsAAndB
-The twins
+Quando tiriamo a indovinare, ci perdiamo la vera identità di una persona. Buona fortuna per il prossimo caso!
 -> PresentingBrother
 
 === PresentingBrother ===
