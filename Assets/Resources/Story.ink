@@ -6,12 +6,12 @@ Play Game Button
 
 === 1Twins ===
 # canvas: 1Twins
-The twins Intro with Owl
+Bentornato, giudice! Ottimo lavoro nel risolvere il tuo primo caso con Sophia e Theo!
 -> 2Twins
 
 === 2Twins ===
 # canvas: 2Twins
-The twins
+Non potevate sapere chi scegliere per l'avventura perché non vi abbiamo detto in cosa siamo bravi. È stato anche ingiusto scegliere le parole per descriverci.
 * [OptionA] -> 3TwinschoosingA
 * [OptionB] -> 3TwinschoosingB
 

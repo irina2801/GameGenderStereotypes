@@ -22,6 +22,9 @@ public class GameManagerScript : MonoBehaviour
 
     public TMP_Text errorMessageText; // Global error message for continue button on ReflectionCanvas 
 
+    private string currentActiveCanvas = string.Empty; // Tracks the currently active canvas
+
+
     void Start()
     {
         // Load the Ink story from JSON file
@@ -59,8 +62,9 @@ public class GameManagerScript : MonoBehaviour
         // Preload the first content to activate the initial canvas - This is a solution because I had to press 2 times on continue button at the beginning, GameManager could not detect the hashtag in ink file 
         if (story.canContinue)
         {
-            string initialText = story.Continue(); // Advance the story to the first piece of content
-            Debug.Log("Initial text: " + initialText);
+            //string initialText = story.Continue(); // Advance the story to the first piece of content
+            //Debug.Log("Initial text: " + initialText);
+            story.Continue(); // Advance to initialize story state
             ContinueStory(); // Process the first set of tags and activate the corresponding canvas
         }
         else
@@ -74,6 +78,8 @@ public class GameManagerScript : MonoBehaviour
 
         // Get the current tags from the Ink story
         List<string> currentTags = story.currentTags;
+
+        //string targetCanvas = null;
 
         // Log the current tags for debugging
         Debug.Log("Current tags: " + string.Join(", ", currentTags));
@@ -97,7 +103,7 @@ public class GameManagerScript : MonoBehaviour
         if (canvasActivated == false)
         {
             Debug.LogWarning("No canvas tags found in the current story. Activating a default canvas.");
-            ActivateCanvas("PlayGameCanvas"); // Change "PlayGameCanvas" to your starting canvas name
+            //ActivateCanvas("PlayGameCanvas"); // Change "PlayGameCanvas" to your starting canvas name
         }
 
 
@@ -114,8 +120,6 @@ public class GameManagerScript : MonoBehaviour
         {
             Debug.LogWarning("No choices available!"); //I no longer need this debug
         }*/
-
-
     }
 
     //method driven by Ink file logic
@@ -138,14 +142,9 @@ public class GameManagerScript : MonoBehaviour
 
                 // Clear error message upon successful validation
                 ClearErrorMessage();
-
-                //collect responses
                 CollectResponses();
             }
         }
-
-
-
 
         if (story.canContinue)
         {
@@ -194,7 +193,6 @@ public class GameManagerScript : MonoBehaviour
         2. Then it activated only 1 canvas at once based on the flow logic from th Ink file
         3. Moreover, it tracks the currect active canvas name. This is useful for saving user's answers in the report file.
     */
-    private string currentActiveCanvas = string.Empty;
     private void ActivateCanvas(string canvasName)
     {
         // Deactivate all canvases
@@ -214,6 +212,12 @@ public class GameManagerScript : MonoBehaviour
             {
                 DisplayReport(); // Display the saved answers
             }
+            else
+            {
+                // Ensure text components are handled correctly
+                HandleEmptyTextComponents(canvasDictionary[canvasName]);
+            }
+
         }
         else
         {
@@ -385,6 +389,45 @@ public class GameManagerScript : MonoBehaviour
             errorMessageText.gameObject.SetActive(false); // Hide the message
         }
     }
+
+
+
+
+    private void HandleEmptyTextComponents(GameObject canvas)
+    {
+        InkDisplayText[] displayTextComponents = canvas.GetComponentsInChildren<InkDisplayText>();
+
+        foreach (InkDisplayText displayText in displayTextComponents)
+        {
+            if (displayText.displayText != null && string.IsNullOrWhiteSpace(displayText.displayText.text))
+            {
+                string canvasText = FetchTextForCanvas(currentActiveCanvas);
+                if (!string.IsNullOrEmpty(canvasText))
+                {
+                    displayText.StopAllAnimations();
+                    displayText.AnimateText(canvasText);
+                }
+            }
+        }
+    }
+
+    private string FetchTextForCanvas(string canvasName)
+    {
+        List<string> currentTags = story.currentTags;
+
+        foreach (string tag in currentTags)
+        {
+            if (tag.StartsWith("canvas:") && tag.Split(':')[1].Trim() == canvasName)
+            {
+                // Fetch the current text without advancing the story
+                return story.currentText;
+            }
+        }
+
+        Debug.LogWarning($"No matching tag found for canvas: {canvasName}");
+        return string.Empty;
+    }
+
 
 
 }
