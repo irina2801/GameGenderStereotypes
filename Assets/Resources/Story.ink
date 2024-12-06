@@ -11,7 +11,7 @@ Bentornato, giudice! Ottimo lavoro nel risolvere <br> il tuo primo caso con Soph
 
 === 2Twins ===
 # canvas: 2Twins
-Non potevate sapere chi scegliere per <br>l'avventura perché non vi abbiamo <br>detto in cosa siamo bravi. È stato <br>anche ingiusto <br>scegliere le parole per descriverci.
+Non potevate sapere chi scegliere per <br>l'avventura perché non vi abbiamo <br>detto in cosa siamo bravi. È stato <br>anche ingiusto scegliere le parole <br>per descriverci.
 * [OptionA] -> 3TwinschoosingA
 * [OptionB] -> 3TwinschoosingB
 
@@ -67,12 +67,20 @@ Mi piacerebbe andare al festival delle Muse, <br>ma mio fratello Alexandros pens
 === choiceAChallengedSubjects ===
 # canvas: choiceAChallengedSubjects
 Congrats! You challenged Gender Stereotypes!
--> ReportCanvas
+-> 3DialogueLittleBrother
 
 === choiceBNOTChallengedSubjects ===
 # canvas: choiceBNOTChallengedSubjects
 Congrats! You challenged Gender Stereotypes!
--> ReportCanvas
+-> 3DialogueLittleBrother
+
+
+=== 3DialogueLittleBrother ===
+# canvas: 3DialogueLittleBrother
+//Little brother talking about hobbies
+Voglio davvero andare al festival delle Muse <br>perché mi piacciono il balletto e la poesia. <br>Alcune persone mi prendono in giro perché <br>pensano che siano hobby femminili. 
+* [OptionA: Challenge] -> ReportCanvas
+* [OptionB] -> ReportCanvas
 
 === ReportCanvas ===
 # canvas: ReportCanvas

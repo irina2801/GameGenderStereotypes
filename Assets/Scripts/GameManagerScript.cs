@@ -165,6 +165,12 @@ public class GameManagerScript : MonoBehaviour
     {
         if (choiceIndex >= 0 && choiceIndex < story.currentChoices.Count)
         {
+            // Get the selected choice text
+            string choiceText = story.currentChoices[choiceIndex].text;//to save choices 
+            // Save the choice to the playerResponses list
+            playerResponses.Add($"Choice: {choiceText}");//to save choices 
+
+
             Debug.Log($"Choice {choiceIndex + 1} selected: {story.currentChoices[choiceIndex].text}");
             story.ChooseChoiceIndex(choiceIndex); // Select the choice in the Ink story
 
@@ -309,6 +315,7 @@ public class GameManagerScript : MonoBehaviour
             Debug.Log($"Displaying report: {string.Join("\n\n", playerResponses)}");
             // Format and display the user responses in the text box
             reportTextBox.text = string.Join("\n\n", playerResponses);
+
             Debug.Log("Report displayed in the ReportCanvas.");
         }
         else
