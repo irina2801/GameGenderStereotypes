@@ -18,6 +18,8 @@ public class InkDisplayText : MonoBehaviour
         {
             StopCoroutine(currentCoroutine);
         }
+        // Replace <br><br> with newline character
+        text = text.Replace("<br>", "\n");
 
         // Start a new animation
         currentCoroutine = StartCoroutine(TypeText(text));
@@ -33,6 +35,8 @@ public class InkDisplayText : MonoBehaviour
             StopCoroutine(currentCoroutine);
             currentCoroutine = null;
         }
+        // Display the full text immediately
+        displayText.text = displayText.text.Replace("<br>", "\n");//reverifica asta!
     }
 
     /// <summary>

@@ -6,18 +6,18 @@ Play Game Button
 
 === 1Twins ===
 # canvas: 1Twins
-Bentornato, giudice! Ottimo lavoro nel risolvere il tuo primo caso con Sophia e Theo!
+Bentornato, giudice! Ottimo lavoro nel risolvere <br> il tuo primo caso con Sophia e Theo!
 -> 2Twins
 
 === 2Twins ===
 # canvas: 2Twins
-Non potevate sapere chi scegliere per l'avventura perché non vi abbiamo detto in cosa siamo bravi. È stato anche ingiusto scegliere le parole per descriverci.
+Non potevate sapere chi scegliere per <br>l'avventura perché non vi abbiamo <br>detto in cosa siamo bravi. È stato <br>anche ingiusto <br>scegliere le parole per descriverci.
 * [OptionA] -> 3TwinschoosingA
 * [OptionB] -> 3TwinschoosingB
 
 === 3TwinschoosingA ===
 # canvas: 3TwinschoosingA
-Esattamente! Siamo più di un ragazzo o di una ragazza. Non tutti i ragazzi e le ragazze sono uguali. Forse il gufo voleva insegnarti qualcosa.
+Esattamente! Siamo più di un ragazzo o di <br>una ragazza. Non tutti i ragazzi e le ragazze <br>sono uguali. Forse il gufo voleva <br>insegnarti qualcosa.
 * [OptionA] -> 4TwinsAAndB
 * [OptionB] -> 4TwinsAAndB
 
@@ -30,7 +30,7 @@ Sapevi solo che siamo un ragazzo e una ragazza. Come potevi conoscerci davvero? 
 
 === 4TwinsAAndB ===
 # canvas: 4TwinsAAndB
-Quando tiriamo a indovinare, ci perdiamo la vera identità di una persona. Buona fortuna per il prossimo caso!
+Quando tiriamo a indovinare, ci perdiamo la <br>vera identità di una persona. Buona fortuna <br>per il prossimo caso!
 -> PresentingBrother
 
 === PresentingBrother ===
@@ -45,20 +45,22 @@ Scenario
 
 === 1DialogueBigBrother ===
 # canvas: 1DialogueBigBrother
-Big Brother Talks: Greetings, jury...
+Saluti, giovane giudice! Ti prego di far capire al <br>mio fratellino che il festival di Ares è la scelta <br>giusta per lui e NON il festival delle Muse.
 * [OptionAAskBigBrother] -> 2DialogueChoiceABigBrother
 * [OptionBAskTheLittleBrother] -> 2DialogueChoiceBLittleBrother
 
 
-=== 2DialogueChoiceABigBrother ===
+=== 2DialogueChoiceABigBrother === 
 # canvas: 2DialogueChoiceABigBrother
-Big Brother Talks
+//Big brother talks
+L'arte e la letteratura sono cose per ragazze. <br>I ragazzi dovrebbero essere bravi negli sport o <br>nelle scienze come la matematica e la fisica. <br>Mio fratello deve imparare a combattere e a <br>giocare a calcio al festival di Ares. 
 * [OptionA: Challenge] -> choiceAChallengedSubjects
 * [OptionB] -> choiceBNOTChallengedSubjects
 
 === 2DialogueChoiceBLittleBrother ===
 # canvas: 2DialogueChoiceBLittleBrother
-Little Brother Talks
+//Little Brother Talks
+Mi piacerebbe andare al festival delle Muse, <br>ma mio fratello Alexandros pensa che sia per le <br>ragazze. Pensa che la letteratura e le arti siano <br>più da ragazze, mentre lo sport, la matematica <br>e la fisica siano più da ragazzi.
 * [OptionA: Challenge] -> choiceAChallengedSubjects
 * [OptionB] -> choiceBNOTChallengedSubjects
 
