@@ -136,7 +136,7 @@ public class GameManagerScript : MonoBehaviour
                 // Validate inputs before proceeding
                 if (!AreAllInputsFilled(canvas))
                 {
-                    DisplayErrorMessage("Please answer all questions before proceeding:)");
+                    DisplayErrorMessage("Rispondete a tutte le domande prima di procedere :)");
                     return;
                 }
 
