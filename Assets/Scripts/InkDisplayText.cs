@@ -1,6 +1,6 @@
-using System.Collections;
-using TMPro;
-using UnityEngine;
+using System.Collections; // For IEnumerator
+using UnityEngine; // For MonoBehaviour, Coroutine
+using TMPro; // For TMP_Text
 
 public class InkDisplayText : MonoBehaviour
 {
@@ -39,12 +39,20 @@ public class InkDisplayText : MonoBehaviour
     }
 
     /// <summary>
-    /// Displays the full text without animation.=> This is needed for the go back button. 
+    /// Displays the full text without animation.
     /// </summary>
     public void SetFullTextImmediately(string text)
     {
         StopAllAnimations(); // Stop any ongoing animation
         displayText.text = text.Replace("<br>", "\n"); // Set the full text
+    }
+
+    /// <summary>
+    /// Returns whether the text animation is currently running.
+    /// </summary>
+    public bool IsAnimating()
+    {
+        return currentCoroutine != null;
     }
 
     /// <summary>

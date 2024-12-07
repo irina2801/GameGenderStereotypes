@@ -178,6 +178,19 @@ public class GameManagerScript : MonoBehaviour
                 ClearErrorMessage();
                 CollectResponses();
             }
+
+            // Handle text animation
+            InkDisplayText[] displayTextComponents = canvas.GetComponentsInChildren<InkDisplayText>();
+            foreach (var displayText in displayTextComponents)
+            {
+                if (displayText.IsAnimating())
+                {
+                    // If the text is animating, instantly display the full text
+                    string fullText = FetchTextForCanvas(currentActiveCanvas);
+                    displayText.SetFullTextImmediately(fullText);
+                    return; // Do not advance the story yet
+                }
+            }
         }
 
         // Ensure the story state is synchronized
@@ -225,6 +238,7 @@ public class GameManagerScript : MonoBehaviour
             }
         }
     }
+
 
 
 
