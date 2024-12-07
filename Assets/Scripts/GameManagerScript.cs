@@ -32,33 +32,21 @@ public class GameManagerScript : MonoBehaviour
         story = new Story(jsonAsset.text);
 
         // Add canvases tagged as "Canvas" in the Dictionary
-        canvasDictionary = new Dictionary<string, GameObject>();
-        foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("Canvas"))
+        canvasDictionary = new Dictionary<string, GameObject>();//Initialize Dictionary
+        // Populate the dictionary with canvases from all relevant tags
+        string[] canvasTags = { "Canvas", "ReflectionCanvas", "ReportCanvas" };
+        foreach (string tag in canvasTags)
         {
-            canvasDictionary[canvas.name] = canvas;
-            canvas.SetActive(false); // Deactivate all canvases initially
-        }
-
-        // Add canvases tagged as "ReflectionCanvas" in the Dictionary
-        foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("ReflectionCanvas"))
-        {
-            if (!canvasDictionary.ContainsKey(canvas.name)) // Avoid duplicates
+            foreach (GameObject canvas in GameObject.FindGameObjectsWithTag(tag))
             {
-                canvasDictionary[canvas.name] = canvas;
-                canvas.SetActive(false); // Deactivate all canvases initially
+                if (!canvasDictionary.ContainsKey(canvas.name))
+                {
+                    canvasDictionary[canvas.name] = canvas;
+                    canvas.SetActive(false); // Deactivate all canvases initially
+                    Debug.Log($"Added canvas: {canvas.name} with tag: {tag}");
+                }
             }
         }
-
-        // Add canvases tagged as "ReportCanvas" in the Dictionary
-        foreach (GameObject canvas in GameObject.FindGameObjectsWithTag("ReportCanvas"))
-        {
-            if (!canvasDictionary.ContainsKey(canvas.name)) // Avoid duplicates
-            {
-                canvasDictionary[canvas.name] = canvas;
-                // No need to disable here since ActivateCanvas handles it
-            }
-        }
-
 
         // Preload the first content to activate the initial canvas - This is a solution because I had to press 2 times on continue button at the beginning, GameManager could not detect the hashtag in ink file 
         if (story.canContinue)
@@ -246,12 +234,13 @@ public class GameManagerScript : MonoBehaviour
     //method driven by Ink file logic
     public void OnChoiceSelected(int choiceIndex) // Connected to Choice Buttons from Unity
     {
+        GameObject canvas = canvasDictionary[currentActiveCanvas];
         if (choiceIndex >= 0 && choiceIndex < story.currentChoices.Count)
         {
             // Get the selected choice text
             string choiceText = story.currentChoices[choiceIndex].text;//to save choices 
             // Save the choice to the playerResponses list
-            playerResponses.Add($"Choice: {choiceText}");//to save choices 
+            playerResponses.Add($"Choice: {choiceText} from canvas: {currentActiveCanvas}");//to save choices 
 
 
             Debug.Log($"Choice {choiceIndex + 1} selected: {story.currentChoices[choiceIndex].text}");
@@ -293,8 +282,6 @@ public class GameManagerScript : MonoBehaviour
             canvasHistory.Push(currentActiveCanvas);
         }
 
-
-
         // Deactivate all canvases
         foreach (var canvas in canvasDictionary.Values)
         {
@@ -328,7 +315,8 @@ public class GameManagerScript : MonoBehaviour
 
     //This method collects the user's answers from the canvases with tag: ReflectionCanvas
     //Then, collected answers are stored in playerResponses list with clear labeling for questions and answers
-    private void CollectResponses()
+    //only for questions
+    private void CollectResponses()//using Queue so that answers are saved according to the hierarchy they have in canvas (top to bottom) => that's why not get component
     {
         // Ensure the current active canvas exists in the dictionary
         if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
@@ -338,6 +326,10 @@ public class GameManagerScript : MonoBehaviour
             // Check if the current canvas is a ReflectionCanvas
             if (canvas.CompareTag("ReflectionCanvas"))
             {
+
+                // Save the name of the ReflectionCanvas in the report
+                playerResponses.Add($"ReflectionCanvas_Name: {currentActiveCanvas}");
+
                 // Use a queue to traverse all child objects, including nested ones
                 Queue<Transform> objectsToCheck = new Queue<Transform>();
                 objectsToCheck.Enqueue(canvas.transform);
@@ -350,8 +342,8 @@ public class GameManagerScript : MonoBehaviour
                     TMP_InputField inputField = current.GetComponent<TMP_InputField>();
                     if (inputField != null && !string.IsNullOrWhiteSpace(inputField.text))
                     {
-                        playerResponses.Add($"Question: {inputField.name}\nAnswer: {inputField.text}");
-                        continue; // Move to the next object
+                        playerResponses.Add($"Open_Question: {inputField.name}\nAnswer: {inputField.text}");
+                        continue; // Move to the next child
                     }
 
                     // Check if the current object is a ToggleGroup (Closed Question)
@@ -361,7 +353,7 @@ public class GameManagerScript : MonoBehaviour
                         Toggle selectedToggle = toggleGroup.ActiveToggles().FirstOrDefault();
                         if (selectedToggle != null)
                         {
-                            playerResponses.Add($"Question: {toggleGroup.name}\nAnswer: {selectedToggle.name}");
+                            playerResponses.Add($"Closed_Question: {toggleGroup.name}\nAnswer: {selectedToggle.name}");
                         }
                     }
 
@@ -371,6 +363,7 @@ public class GameManagerScript : MonoBehaviour
                         objectsToCheck.Enqueue(child);
                     }
                 }
+
             }
             else
             {
