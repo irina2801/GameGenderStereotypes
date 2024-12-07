@@ -33,10 +33,12 @@ Sapevi solo che siamo un ragazzo e una ragazza. Come potevi conoscerci davvero? 
 Quando tiriamo a indovinare, ci perdiamo la <br>vera identità di una persona. Buona fortuna <br>per il prossimo caso!
 -> PresentingBrother
 
+
 === PresentingBrother ===
 # canvas: PresentingBrother
 Presenting the 2 brothers
 -> ScenarioBrothers
+
 
 === ScenarioBrothers ===
 # canvas: ScenarioBrothers

@@ -23,6 +23,7 @@ public class GameManagerScript : MonoBehaviour
     public TMP_Text errorMessageText; // Global error message for continue button on ReflectionCanvas 
 
     private string currentActiveCanvas = string.Empty; // Tracks the currently active canvas
+    private Stack<string> canvasHistory = new Stack<string>();//for go back button
 
 
     void Start()
@@ -125,7 +126,7 @@ public class GameManagerScript : MonoBehaviour
     //method driven by Ink file logic
     //This methos is connected to the CONTINUE BUTTON in Inspector Unity
     //It works for normal canvases and also canvases with the tag "ReflectionCanvas" 
-    public void OnButtonPressed()//CONTINUE Button
+    /*public void OnButtonPressed()//CONTINUE Button
     {
         // check if the current canvas is a ReflectionCanvas
         if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
@@ -159,7 +160,75 @@ public class GameManagerScript : MonoBehaviour
             Debug.LogWarning("No more content to continue in the story!"); //this is for debug
             SaveReport();
         }
+    }*/
+    public void OnButtonPressed()
+    {
+        // Validate the current canvas state
+        if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
+        {
+            GameObject canvas = canvasDictionary[currentActiveCanvas];
+            if (canvas.CompareTag("ReflectionCanvas"))
+            {
+                if (!AreAllInputsFilled(canvas))
+                {
+                    DisplayErrorMessage("Rispondete a tutte le domande prima di procedere :)");
+                    return;
+                }
+
+                ClearErrorMessage();
+                CollectResponses();
+            }
+        }
+
+        // Ensure the story state is synchronized
+        if (story.canContinue)
+        {
+            string storyText = story.Continue(); // Advance the story
+            Debug.Log($"Current text: {storyText}");
+            ContinueStory();
+        }
+        else if (story.currentChoices.Count > 0)
+        {
+            Debug.Log("Choices are available but no further content to continue.");
+        }
+        else
+        {
+            // Attempt to resynchronize the story state
+            if (!string.IsNullOrEmpty(currentActiveCanvas))
+            {
+                Debug.LogWarning("No more content to continue! Attempting to resynchronize with Ink story.");
+                try
+                {
+                    story.ChoosePathString(currentActiveCanvas);
+                    if (story.canContinue)
+                    {
+                        string resyncedText = story.Continue();
+                        Debug.Log($"Resynchronized text: {resyncedText}");
+                        ContinueStory();
+                    }
+                    else
+                    {
+                        Debug.LogError("Resynchronization failed. Ending game.");
+                        SaveReport();
+                    }
+                }
+                catch
+                {
+                    Debug.LogError("Failed to resynchronize story state.");
+                    SaveReport();
+                }
+            }
+            else
+            {
+                Debug.LogWarning("No active canvas or Ink path to resynchronize.");
+                SaveReport();
+            }
+        }
     }
+
+
+
+
     //method driven by Ink file logic
     public void OnChoiceSelected(int choiceIndex) // Connected to Choice Buttons from Unity
     {
@@ -194,6 +263,9 @@ public class GameManagerScript : MonoBehaviour
         }
     }
 
+
+
+
     /* 
         1. This method diactivates all canvases at the beginning of the game
         2. Then it activated only 1 canvas at once based on the flow logic from th Ink file
@@ -201,6 +273,14 @@ public class GameManagerScript : MonoBehaviour
     */
     private void ActivateCanvas(string canvasName)
     {
+        // Push the current active canvas to the history before transitioning//go back button
+        if (!string.IsNullOrEmpty(currentActiveCanvas))
+        {
+            canvasHistory.Push(currentActiveCanvas);
+        }
+
+
+
         // Deactivate all canvases
         foreach (var canvas in canvasDictionary.Values)
         {
@@ -434,6 +514,43 @@ public class GameManagerScript : MonoBehaviour
         Debug.LogWarning($"No matching tag found for canvas: {canvasName}");
         return string.Empty;
     }
+
+
+    public void OnGoBackButtonPressed()
+    {
+        if (canvasHistory.Count > 0)
+        {
+            // Get the previous canvas from the history stack
+            string previousCanvas = canvasHistory.Pop();
+
+            // Update the Ink story to the corresponding path
+            try
+            {
+                story.ChoosePathString(previousCanvas); // Rewind Ink state
+                Debug.Log($"Jumped back to Ink path: {previousCanvas}");
+            }
+            catch
+            {
+                Debug.LogError($"Failed to jump to Ink path for canvas: {previousCanvas}");
+                return;
+            }
+
+            // Force the story to align with the current state
+            if (story.canContinue)
+            {
+                story.Continue(); // Reset canContinue state
+            }
+
+            // Activate the previous canvas
+            ActivateCanvas(previousCanvas);
+        }
+        else
+        {
+            Debug.LogWarning("No previous canvas in history to go back to.");
+        }
+    }
+
+
 
 
 
