@@ -67,20 +67,50 @@ Mi piacerebbe andare al festival delle Muse, <br>ma mio fratello Alexandros pens
 === choiceAChallengedSubjects ===
 # canvas: choiceAChallengedSubjects
 Congrats! You challenged Gender Stereotypes!
--> 3DialogueLittleBrother
+-> 3DialogueLittleBrotherWeirdOrNot
 
 === choiceBNOTChallengedSubjects ===
 # canvas: choiceBNOTChallengedSubjects
 Congrats! You challenged Gender Stereotypes!
--> 3DialogueLittleBrother
+-> 3DialogueLittleBrotherWeirdOrNot
 
 
-=== 3DialogueLittleBrother ===
-# canvas: 3DialogueLittleBrother
+=== 3DialogueLittleBrotherWeirdOrNot ===
+# canvas: 3DialogueLittleBrotherWeirdOrNot
 //Little brother talking about hobbies
-Voglio davvero andare al festival delle Muse <br>perché mi piacciono il balletto e la poesia. <br>Alcune persone mi prendono in giro perché <br>pensano che siano hobby femminili. 
-* [OptionA: Challenge] -> ReportCanvas
-* [OptionB] -> ReportCanvas
+Pensa che sia un po' strano che a un ragazzo <br>piaccia il balletto o la poesia, giovane giudice?
+* [OptionA: It is weird] -> 4DialogueLittleBrotherchoosingA
+* [OptionB: It is not] -> 4DialogueLittleBrotherchoosingB
+
+
+=== 4DialogueLittleBrotherchoosingA ===
+# canvas: 4DialogueLittleBrotherchoosingA
+//Little brother talking about hobbies
+Perché pensi che sia un po' strano che a un <br>ragazzo piacciano il balletto e la poesia?
+-> 5DialogueLittleBrotherHobbiesOnlyForGirlsOrBoys
+
+=== 4DialogueLittleBrotherchoosingB ===
+# canvas: 4DialogueLittleBrotherchoosingB
+//Little brother talking about hobbies
+Perché pensi che NON sia strano che a un <br>ragazzo piacciano il balletto e la poesia?
+-> 5DialogueLittleBrotherHobbiesOnlyForGirlsOrBoys
+
+=== 5DialogueLittleBrotherHobbiesOnlyForGirlsOrBoys ===
+# canvas: 5DialogueLittleBrotherHobbiesOnlyForGirlsOrBoys
+//Little brother talking about hobbies
+Voglio andare al festival delle Muse perché mi <br>piacciono il balletto e la poesia. Mio fratello <br>pensa che questi hobby siano per le ragazze. <br><br>Alcuni hobby sono solo per le ragazze o anche per i ragazzi? 
+* [OptionA: Not Challenging] -> ReflectionTimeHobbieschoosingA
+* [OptionB: Hobbies are for everybody] -> ReflectionTimeHobbieschoosingB
+
+=== ReflectionTimeHobbieschoosingA ===
+# canvas: ReflectionTimeHobbieschoosingA
+questions reflection time A
+-> ReportCanvas
+
+=== ReflectionTimeHobbieschoosingB ===
+# canvas: ReflectionTimeHobbieschoosingB
+questions reflection time B
+-> ReportCanvas
 
 === ReportCanvas ===
 # canvas: ReportCanvas
