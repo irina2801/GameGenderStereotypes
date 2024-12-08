@@ -157,7 +157,7 @@ CHOOSING
 # canvas: CHOOSING_Muses_OR_Ares
 MAKE A CHOICE: Ares or Muses Festival
 * [OptionA: 9 Muses festival] -> CHOICE_A_Muses_LittleBrother
-* [OptionB: Ares festival] -> CHOICE_B_Ares_LittleBrother
+* [OptionB: Ares festival] -> choiceBARESFestival
 
 
 === CHOICE_A_Muses_LittleBrother ===
@@ -165,8 +165,8 @@ MAKE A CHOICE: Ares or Muses Festival
 Caro giudice, grazie. <br>Il tuo consiglio mi dà forza! <br>Anche se mio fratello la pensa <br>diversamente, seguirò il mio cuore e farò <br>ciò che amo al festival delle Muse.
 -> ReflectionChoice
 
-=== CHOICE_B_Ares_LittleBrother ===
-# canvas: CHOICE_B_Ares_LittleBrother
+=== choiceBARESFestival ===
+# canvas: choiceBARESFestival
 Caro giudice, grazie. <br>Il tuo consiglio mi dà forza! <br><br>Anche se mio fratello la pensa <br>diversamente, seguirò il mio cuore e farò <br>ciò che amo al festival delle Muse.
 -> ReflectionChoice
 
