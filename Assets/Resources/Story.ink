@@ -174,7 +174,7 @@ Caro giudice, grazie. <br>Il tuo consiglio mi dà forza! <br><br>Anche se mio fr
 
 === ReflectionChoice ===
 # canvas: ReflectionChoice
-Caro giudice, grazie per il tuo consiglio. <br><br>Ma seguirò il mio cuore e andrò al festival <br>delle Muse.<br>Voglio sfidare gli STEREOTIPI DI <br>sGENERE in cui crede mio fratello.
+Caro giudice, grazie per il tuo consiglio. <br><br>Ma seguirò il mio cuore e andrò al festival <br>delle Muse.<br>Voglio sfidare gli STEREOTIPI DI <br>GENERE in cui crede mio fratello.
 -> Owl_LetsSee_WhatHappened
 
 
