@@ -525,12 +525,29 @@ public class GameManagerScript : MonoBehaviour
 
     public void OnGoBackButtonPressed()
     {
+        if (!string.IsNullOrEmpty(currentActiveCanvas) && canvasDictionary.ContainsKey(currentActiveCanvas))
+        {
+            GameObject currentCanvas = canvasDictionary[currentActiveCanvas];
+            InkDisplayText[] displayTextComponents = currentCanvas.GetComponentsInChildren<InkDisplayText>();
+
+            foreach (var displayText in displayTextComponents)
+            {
+                if (displayText.IsAnimating())
+                {
+                    // Instantly display full text if animating
+                    string fullText = FetchTextForCanvas(currentActiveCanvas);
+                    displayText.SetFullTextImmediately(fullText);
+                    return; // Exit without proceeding to canvas transition
+                }
+            }
+        }
+
+        // Proceed with Go Back logic if no text animation is active
         if (canvasHistory.Count > 0)
         {
-            // Get the previous canvas from the history stack
             string previousCanvas = canvasHistory.Pop();
 
-            // Update the Ink story to the corresponding path
+            // Update Ink story to match previous canvas state
             try
             {
                 story.ChoosePathString(previousCanvas); // Rewind Ink state
@@ -542,7 +559,6 @@ public class GameManagerScript : MonoBehaviour
                 return;
             }
 
-            // Force the story to align with the current state
             if (story.canContinue)
             {
                 story.Continue(); // Reset canContinue state
