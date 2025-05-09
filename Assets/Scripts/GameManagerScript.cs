@@ -397,13 +397,22 @@ public class GameManagerScript : MonoBehaviour
     //This method displayes the text from the report file in the emty TextMeshPro box on the report canvas in Unity at the end of the game
     private void DisplayReport()
     {
+
         if (reportCanvas != null && reportTextBox != null)
         {
-            Debug.Log($"Displaying report: {string.Join("\n\n", playerResponses)}");
-            // Format and display the user responses in the text box
-            reportTextBox.text = string.Join("\n\n", playerResponses);
+            // Locate the Scroll View's TextMeshPro text box
+            TMP_Text scrollViewTextBox = reportCanvas.GetComponentInChildren<TMP_Text>();
 
-            Debug.Log("Report displayed in the ReportCanvas.");
+            if (scrollViewTextBox != null)
+            {
+                // Set the text dynamically
+                scrollViewTextBox.text = string.Join("\n\n", playerResponses);
+                Debug.Log($"Report displayed in the Scroll View: {string.Join("\n\n", playerResponses)}");
+            }
+            else
+            {
+                Debug.LogWarning("Scroll View TextMeshPro text component not found.");
+            }
         }
         else
         {
