@@ -9114,7 +9114,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -121.59, y: 187.97}
+  m_AnchoredPosition: {x: -121.59009, y: 187.96997}
   m_SizeDelta: {x: -1459.0663, y: -1109.3}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &409500903
@@ -9994,7 +9994,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Immaginate che alla vostra migliore amica piacciano cose che secondo alcuni
+  m_text: "Immaginate che allo vostro migliore amico piacciano cose che secondo alcuni
     sono \u201Csolo per ragazze\u201D, come la danza classica e l'ascolto di Taylor
     Swift. "
   m_isRightToLeft: 0
@@ -27265,7 +27265,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Immaginate che alla vostra migliore amica piacciano cose che secondo alcuni
+  m_text: "Immaginate che allo vostro migliore amico piacciano cose che secondo alcuni
     sono \u201Csolo per ragazze\u201D, come la danza classica e l'ascolto di Taylor
     Swift. "
   m_isRightToLeft: 0
@@ -43023,7 +43023,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "3. Se una cosa ti piace davvero, \xE8 importante cosa ne pensano gli altri? "
+  m_text: "3. Perch\xE9 pensi che fosse importante per lui fare questo?"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
